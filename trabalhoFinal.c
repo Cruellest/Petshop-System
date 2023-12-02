@@ -1,3 +1,12 @@
+/******************************************************************************
+                        ! ! !  Trabalho Final  ! ! !
+
+  Ryan de Marque Sales;
+  Mauro Diogo Fioravante Ferreira;
+  Joâo Paulo Gonçalves Barros.
+*******************************************************************************/
+
+
 #include <string.h>
 #include <stdio.h>
 
@@ -39,7 +48,7 @@ int validarData(struct Data dataValidada){
 
     struct Data dAtual;
 
-    printf("\nInforme a data de hoje (d/m/a): ");
+    printf("Informe a data de hoje (d/m/a): ");
     scanf(" %d/%d/%d",&dAtual.dia,&dAtual.mes,&dAtual.ano);
 
     //validar ano:
@@ -89,6 +98,7 @@ int validartelefone(char telefone[15]){
     return 0;
 }
 
+//Cadastra o cliente retorna 0 caso seja um sucesso
 int cadastrarclientes(struct Cliente *clientes,int cont){
     
     char nometemp[50],telefonetemp[15];
@@ -97,7 +107,7 @@ int cadastrarclientes(struct Cliente *clientes,int cont){
 
     while(1){
    
-    printf("\e[1;1H\e[2J");
+    printf("\e[1;1H\e[2J");    //comando para limpar o terminal
 
     printf("Por favor digite o nome do Cliente: ");
     scanf(" %[^\n]",nometemp);
@@ -139,6 +149,7 @@ int cadastrarclientes(struct Cliente *clientes,int cont){
     return 0;
 }
 
+//Cadastra o Pet e retorna 0 caso tenha tido sucesso
 int cadstrarPet(struct Animal *animais, int cont){
 
     char nometemp[50],agressivotemp;
@@ -176,7 +187,7 @@ int cadstrarPet(struct Animal *animais, int cont){
 
     printf("\e[1;1H\e[2J");
     
-    if(tempesp >4){
+    if(tempesp >4 && tempesp < 1){
         
         printf("Entrada Invalida");
         getchar();
@@ -235,11 +246,14 @@ int cadstrarPet(struct Animal *animais, int cont){
 
     }
 
+    //Reutiliza função anterior
     cadastrarclientes(&animais[cont].cliente,0);
 
     return 0;
 }
 
+
+//Busca clientes com o nome desejado e caso encontre buscará animais que possuem o cliente como dono
 int buscarcliente(struct Cliente *cliente,int cont,char nome[50],struct Animal *animais, int contanimais){
     printf("\e[1;1H\e[2J");
 
@@ -264,6 +278,7 @@ int buscarcliente(struct Cliente *cliente,int cont,char nome[50],struct Animal *
     getchar();
 }
 
+//ordena o array de animais por meio de um algoritimo de quicksort
 void ordenarAnimais(struct Animal *animais, int cont) {
     struct Animal temp;
     for (int i = 0; i < cont - 1; i++) {
@@ -277,6 +292,7 @@ void ordenarAnimais(struct Animal *animais, int cont) {
     }
 }
 
+//imprime os animais após ordena-los
 int listarpets(struct Animal *animais, int cont) {
     ordenarAnimais(animais, cont);
     printf("\e[1;1H\e[2J\n");
@@ -292,9 +308,24 @@ int listarpets(struct Animal *animais, int cont) {
     return 0;
 }
 
+//Percorre todo o array de animais e imprime as informacoes daqueles que possuem o nome correspondente com o parametro em formato de tabela
+int buscarPet(struct Animal *animais, int cont,char nome[50]){
+    printf("\e[1;1H\e[2J");
+
+    for (int i = 0; i < cont; i++){
+
+        if(strcmp(animais[i].nome_do_animal,nome) == 0){
+            printf("\nNome do Animal: %s | Especie do animal: %d | Data de Nascimento: %d/%d/%d | Agressivo: %c | Nome do Cliente: %s | Telefone do Cliente: %s |\n", animais[i].nome_do_animal, animais[i].especie,animais[i].data_nascimento.dia, animais[i].data_nascimento.mes, animais[i].data_nascimento.ano,animais[i].agressivo,animais[i].cliente.nome_do_cliente,animais[i].cliente.telefone_do_cliente);   
+        }
+}
+    getchar();
+    getchar();
+}
+
+//Percorre o Array e ultiliza um contador para adquirir a quantidade de animais agressivos retornando assuim a quantidade
 int retornarPetsAgressivos(struct Animal *animais,int cont){
     int qnt = 0;
-
+    printf("\e[1;1H\e[2J");
     for (int i = 0; i < cont; i++)
     {
         if(animais[i].agressivo == 's' || animais[i].agressivo == 'S'){
@@ -305,23 +336,26 @@ int retornarPetsAgressivos(struct Animal *animais,int cont){
     return qnt;
 }
 
+
 int main(){
 
     printf("\e[1;1H\e[2J");
-    struct Cliente clientes[50];
-    struct Animal animais[50];
+    struct Cliente clientes[100];
+    struct Animal animais[100];
     
     char nome[50];
     int op = -1,numAnimais=0,numClientes=0;
 
     while(op != 0){
-
+    
+    printf("\e[1;1H\e[2J");
     printf("\nMenu de Gerenciamento do Pet shop\n\n");
     printf("1- Cadastrar Cliente\n");
     printf("2- Cadastrar Pet\n");
     printf("3- Buscar Clientes\n");
-    printf("4- Listar Pets\n");
-    printf("5- Mostrar quantidade de animais Agressivos\n");
+    printf("4- Buscar Pet\n");
+    printf("5- Listar Pets\n");
+    printf("6- Mostrar quantidade de animais Agressivos\n");
     printf("Opcao: ");
     scanf(" %d",&op);
 
@@ -347,13 +381,23 @@ int main(){
         break;
 
     case 4:
+        printf("\e[1;1H\e[2J");
+        printf("Por favor Digite o Nome do Pet: ");
+        scanf(" %[^\n]",nome);
+
+        buscarPet(animais,numAnimais,nome);
+        break;
+
+    case 5:
 
         listarpets(animais,numAnimais);
 
         break;
 
-    case 5:
+    case 6:
         printf("\nExistem %d animais agressivos cadastrados.\n",retornarPetsAgressivos(animais,numAnimais));
+        getchar();
+        getchar();
 
 
     break;

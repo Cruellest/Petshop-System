@@ -336,26 +336,163 @@ int retornarPetsAgressivos(struct Animal *animais,int cont){
     return qnt;
 }
 
+//Lista os animais por especie no formato de tabela
+void listarAnimaisPorEspecie(struct Animal *animais, int cont) {
+    //A funcao assume que as especies começam em 1 e vão até 4
+    printf("\e[1;1H\e[2J");
+    int maxEspecie = 0;
+    for (int i = 0; i < cont; i++) {
+        if (animais[i].especie > maxEspecie) {
+            maxEspecie = animais[i].especie;
+        }
+    }
+
+    for (int especie = 1; especie <= maxEspecie; especie++) {
+        printf("Especie: %d\n", especie);
+        for (int i = 0; i < cont; i++) {
+            if (animais[i].especie == especie) {
+                printf("Nome do Animal: %s | ", animais[i].nome_do_animal);
+                printf("Data de Nascimento: %d/%d/%d | ", animais[i].data_nascimento.dia, animais[i].data_nascimento.mes, animais[i].data_nascimento.ano);
+                printf("Agressivo: %c\n", animais[i].agressivo);
+                printf("\n");
+            }
+        }
+    }
+    getchar();
+    getchar();
+}
+
+
+void listarAniversariantes(struct Animal *animais, int cont, struct Data dataUsuario) {
+    printf("\e[1;1H\e[2J");
+    printf("Animais que farão aniversário a partir de %d/%d:\n\n", dataUsuario.dia, dataUsuario.mes);
+    for (int i = 0; i < cont; i++) {
+        if ((animais[i].data_nascimento.mes > dataUsuario.mes) || 
+            (animais[i].data_nascimento.mes == dataUsuario.mes && animais[i].data_nascimento.dia >= dataUsuario.dia)) {
+            printf("Nome do Animal: %s\n", animais[i].nome_do_animal);
+            printf("Data de Nascimento: %d/%d/%d\n", animais[i].data_nascimento.dia, animais[i].data_nascimento.mes, animais[i].data_nascimento.ano);
+            printf("\n");
+            
+    
+        }
+    getchar();
+    getchar();
+    }
+}
+
+void realizarServico(struct Cliente *clientes, struct Animal *animais, struct Servico *servicos, int numCliente, int numAnimais, int numServicos) {
+    int idServico;
+    char nomeAnimal[50], nomeCliente[50], pagamento;
+    int animalEncontrado = 0;
+
+    printf("\e[1;1H\e[2J");
+    printf("Por favor, selecione o tipo de serviço:\n1 - Banho (R$40)\n2 - Tosa (R$65)\n3 - Vacina (R$120)\n");
+    scanf("%d", &idServico);
+
+    printf("\e[1;1H\e[2J");
+    printf("Por favor, digite o nome do animal:\n");
+    scanf("%s", nomeAnimal);
+
+    printf("\e[1;1H\e[2J");
+    printf("Por favor, digite o nome do cliente:\n");
+    scanf("%s", nomeCliente);
+
+    for (int i = 0; i < numAnimais; i++) {
+        if (strcmp(animais[i].nome_do_animal, nomeAnimal) == 0 && strcmp(animais[i].cliente.nome_do_cliente, nomeCliente) == 0) {
+            servicos[numServicos].pet = animais[i];
+            animalEncontrado = 1;
+            break;
+        }
+    }
+
+    if (!animalEncontrado) {
+        printf("\e[1;1H\e[2J");
+        printf("Animal não encontrado.\n");
+        getchar();
+        getchar();
+        return;
+    }
+
+    servicos[numServicos].identificador = numServicos;
+    servicos[numServicos].tipo_de_servico = idServico;
+
+    printf("\e[1;1H\e[2J");
+    printf("Por favor, informe a data do serviço no formato (Dia/Mes/Ano):\n");
+    scanf("%d/%d/%d", &servicos[numServicos].data_servico.dia, &servicos[numServicos].data_servico.mes, &servicos[numServicos].data_servico.ano);
+
+    printf("\e[1;1H\e[2J");
+    printf("O pagamento foi realizado na hora da contratação? (S/N)\n");
+    scanf(" %c", &pagamento);
+    servicos[numServicos].pago = pagamento;
+
+    printf("\e[1;1H\e[2J");
+    printf("Serviço realizado com sucesso!\n");
+    getchar();
+    getchar();
+}
+void listarServicosPendentes(struct Servico *servicos, int numServicos) {
+    printf("\e[1;1H\e[2J");
+    printf("Serviços pendentes:\n");
+    for (int i = 0; i < numServicos; i++) {
+        if (servicos[i].pago == 'N' || servicos[i].pago == 'n') {
+            printf("Nome do Animal: %s\n", servicos[i].pet.nome_do_animal);
+            printf("Identificador do Serviço: %d\n", servicos[i].identificador);
+            printf("Tipo de Serviço: %d\n", servicos[i].tipo_de_servico);
+            printf("Data do Serviço: %d/%d/%d\n", servicos[i].data_servico.dia, servicos[i].data_servico.mes, servicos[i].data_servico.ano);
+            printf("\n");
+        }
+    }
+    getchar();
+    getchar();
+}
+
+void pagarServico(struct Servico *servicos, int tamanho, int id) {
+    for(int i = 0; i < tamanho; i++) {
+        if(servicos[i].identificador == id) {
+            if(servicos[i].pago == 'N' || servicos[i].pago == 'n') {
+                servicos[i].pago = 'S';
+                printf("\e[1;1H\e[2J");
+                printf("O serviço %d foi pago.\n", id);
+            } else {
+                printf("\e[1;1H\e[2J");
+                printf("O serviço %d já foi pago.\n", id);
+            }
+            return;
+        }
+    }
+    printf("\e[1;1H\e[2J");
+    printf("Serviço com identificador %d não encontrado.\n", id);
+    getchar();
+    getchar();
+}
 
 int main(){
 
     printf("\e[1;1H\e[2J");
     struct Cliente clientes[100];
     struct Animal animais[100];
+    struct Servico servicos[100];
     
+    struct Data input;
     char nome[50];
-    int op = -1,numAnimais=0,numClientes=0;
+    int op = -1,numAnimais=0,numClientes=0,numServicos=0,id;
 
     while(op != 0){
     
     printf("\e[1;1H\e[2J");
     printf("\nMenu de Gerenciamento do Pet shop\n\n");
-    printf("1- Cadastrar Cliente\n");
-    printf("2- Cadastrar Pet\n");
-    printf("3- Buscar Clientes\n");
-    printf("4- Buscar Pet\n");
-    printf("5- Listar Pets\n");
-    printf("6- Mostrar quantidade de animais Agressivos\n");
+    printf("1- Cadastrar Cliente                                ");
+    printf("7- Mostrar quantidade de animais Agressivos\n");
+    printf("2- Cadastrar Pet                                    ");
+    printf("8- Listar Aniversariantes da Semana\n");
+    printf("3- Buscar Clientes                                  ");
+    printf("9- Realizar Servico\n");
+    printf("4- Buscar Pet                                       ");
+    printf("10-Listar Servicos Pendentes\n");
+    printf("5- Listar Pets                                      ");
+    printf("11-Pagar Servico\n");
+    printf("6- Listar Pets por Especies                         ");
+    printf("0- Para sair\n");
     printf("Opcao: ");
     scanf(" %d",&op);
 
@@ -395,10 +532,45 @@ int main(){
         break;
 
     case 6:
+
+        listarAnimaisPorEspecie(animais,numAnimais);
+
+        break;
+
+    case 7:
         printf("\nExistem %d animais agressivos cadastrados.\n",retornarPetsAgressivos(animais,numAnimais));
         getchar();
         getchar();
 
+
+    break;
+
+    case 8:
+        printf("\e[1;1H\e[2J");
+        printf("Por Favor digite a Data que deseja checar: ");
+        scanf(" %d/%d/%d",&input.dia,&input.mes,&input.ano);
+
+        listarAniversariantes(animais,numAnimais,input);
+    	break;
+
+    case 9:
+        realizarServico(clientes,animais,servicos,numClientes,numAnimais,numServicos);
+        numServicos++;
+
+
+    break;
+
+    case 10:
+
+        listarServicosPendentes(servicos,numServicos);
+
+    break;
+
+    case 11:
+        printf("\e[1;1H\e[2J");
+        printf("Por favor digite o Identificador do servico pendente: ");
+        scanf(" %d",&id);
+        pagarServico(servicos,numServicos,id);
 
     break;
 

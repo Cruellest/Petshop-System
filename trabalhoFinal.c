@@ -99,7 +99,7 @@ int validartelefone(char telefone[15]){
 }
 
 //Cadastra o cliente retorna 0 caso seja um sucesso
-int cadastrarclientes(struct Cliente *clientes,int cont){
+int cadastrarclientes(struct Cliente clientes[],int cont){
     
     char nometemp[50],telefonetemp[15];
 
@@ -150,7 +150,7 @@ int cadastrarclientes(struct Cliente *clientes,int cont){
 }
 
 //Cadastra o Pet e retorna 0 caso tenha tido sucesso
-int cadstrarPet(struct Animal *animais, int cont){
+int cadstrarPet(struct Animal animais[], int cont){
 
     char nometemp[50],agressivotemp;
     struct Data temp;
@@ -254,7 +254,7 @@ int cadstrarPet(struct Animal *animais, int cont){
 
 
 //Busca clientes com o nome desejado e caso encontre buscará animais que possuem o cliente como dono
-int buscarcliente(struct Cliente *cliente,int cont,char nome[50],struct Animal *animais, int contanimais){
+int buscarcliente(struct Cliente cliente[],int cont,char nome[50],struct Animal animais[], int contanimais){
     printf("\e[1;1H\e[2J");
 
     for (int i = 0; i < cont; i++){
@@ -279,7 +279,7 @@ int buscarcliente(struct Cliente *cliente,int cont,char nome[50],struct Animal *
 }
 
 //ordena o array de animais por meio de um algoritimo de quicksort
-void ordenarAnimais(struct Animal *animais, int cont) {
+void ordenarAnimais(struct Animal animais[], int cont) {
     struct Animal temp;
     for (int i = 0; i < cont - 1; i++) {
         for (int j = i + 1; j < cont; j++) {
@@ -293,7 +293,7 @@ void ordenarAnimais(struct Animal *animais, int cont) {
 }
 
 //imprime os animais após ordena-los
-int listarpets(struct Animal *animais, int cont) {
+int listarpets(struct Animal animais[], int cont) {
     ordenarAnimais(animais, cont);
     printf("\e[1;1H\e[2J\n");
     for (int i = 0; i < cont; i++) {
@@ -309,7 +309,7 @@ int listarpets(struct Animal *animais, int cont) {
 }
 
 //Percorre todo o array de animais e imprime as informacoes daqueles que possuem o nome correspondente com o parametro em formato de tabela
-int buscarPet(struct Animal *animais, int cont,char nome[50]){
+int buscarPet(struct Animal animais[], int cont,char nome[50]){
     printf("\e[1;1H\e[2J");
 
     for (int i = 0; i < cont; i++){
@@ -323,7 +323,7 @@ int buscarPet(struct Animal *animais, int cont,char nome[50]){
 }
 
 //Percorre o Array e ultiliza um contador para adquirir a quantidade de animais agressivos retornando assuim a quantidade
-int retornarPetsAgressivos(struct Animal *animais,int cont){
+int retornarPetsAgressivos(struct Animal animais[],int cont){
     int qnt = 0;
     printf("\e[1;1H\e[2J");
     for (int i = 0; i < cont; i++)
@@ -337,7 +337,7 @@ int retornarPetsAgressivos(struct Animal *animais,int cont){
 }
 
 //Lista os animais por especie no formato de tabela
-void listarAnimaisPorEspecie(struct Animal *animais, int cont) {
+void listarAnimaisPorEspecie(struct Animal animais[], int cont) {
     //A funcao assume que as especies começam em 1 e vão até 4
     printf("\e[1;1H\e[2J");
     int maxEspecie = 0;
@@ -363,7 +363,7 @@ void listarAnimaisPorEspecie(struct Animal *animais, int cont) {
 }
 
 
-void listarAniversariantes(struct Animal *animais, int cont, struct Data dataUsuario) {
+void listarAniversariantes(struct Animal animais[], int cont, struct Data dataUsuario) {
     printf("\e[1;1H\e[2J");
     printf("Animais que farão aniversário a partir de %d/%d:\n\n", dataUsuario.dia, dataUsuario.mes);
     for (int i = 0; i < cont; i++) {
@@ -380,7 +380,7 @@ void listarAniversariantes(struct Animal *animais, int cont, struct Data dataUsu
     }
 }
 
-void realizarServico(struct Cliente *clientes, struct Animal *animais, struct Servico *servicos, int numCliente, int numAnimais, int numServicos) {
+void realizarServico(struct Cliente clientes[], struct Animal animais[], struct Servico servicos[], int numCliente, int numAnimais, int numServicos) {
     int idServico;
     char nomeAnimal[50], nomeCliente[50], pagamento;
     int animalEncontrado = 0;
@@ -430,7 +430,7 @@ void realizarServico(struct Cliente *clientes, struct Animal *animais, struct Se
     getchar();
     getchar();
 }
-void listarServicosPendentes(struct Servico *servicos, int numServicos) {
+void listarServicosPendentes(struct Servico servicos[], int numServicos) {
     printf("\e[1;1H\e[2J");
     printf("Serviços pendentes:\n");
     for (int i = 0; i < numServicos; i++) {
@@ -446,7 +446,7 @@ void listarServicosPendentes(struct Servico *servicos, int numServicos) {
     getchar();
 }
 
-void pagarServico(struct Servico *servicos, int tamanho, int id) {
+void pagarServico(struct Servico servicos[], int tamanho, int id) {
     for(int i = 0; i < tamanho; i++) {
         if(servicos[i].identificador == id) {
             if(servicos[i].pago == 'N' || servicos[i].pago == 'n') {
